@@ -62,7 +62,7 @@ const logPoints = (coordinates) => {
     const path = require('path')
 
     // console.log('coordinatesString = ', coordinatesString)
-    const coordinatesData = coordinates.coordString.join(',');
+    const coordinatesData = coordinates.join(',');
 
     const directory = path.join(__dirname, './logPoints.txt')
 
