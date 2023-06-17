@@ -1,12 +1,15 @@
-const getRandomPoints = (amount, range) => {
+const getRandomPoints = (amount, range, circleRadius) => {
     let coordinates = [];
     let coordinatesString = [];
     const getRandomNumber = (range) => {
-        return Math.round(Math.random() * range) - 100;
+        return Math.round(Math.random() * range) - circleRadius;
     }
     for (let i = 0; i < amount; i++) {
-        coordinatesString.push(`(${getRandomNumber(range)},${getRandomNumber(range)})`);
-        coordinates.push([getRandomNumber(range),getRandomNumber(range)])
+        const pointX = getRandomNumber(range);
+        const pointY = getRandomNumber(range)
+
+        coordinatesString.push(`(${pointX},${pointY})`);
+        coordinates.push([pointX,pointY])
     }
     return {
         coordString:coordinatesString,
@@ -54,25 +57,38 @@ const PiAproximation = (coordinatesList, circleRadius, amountOfPoints) => {
     return aproximatePi;
 
 }
-const findPi = () => {
+const logPoints = (coordinates) => {
     const fs = require('fs')
-    const circleRadius = 100
-    const range = circleRadius*2;
-    const amountOfPoints = 678;
-    const coordinates = getRandomPoints(amountOfPoints,range);
-    const aproximatePi = PiAproximation(coordinates.coordArray, circleRadius, amountOfPoints);
-    console.log('pi', aproximatePi)
-
+    const path = require('path')
 
     // console.log('coordinatesString = ', coordinatesString)
     const coordinatesData = coordinates.coordString.join(',');
 
+    const directory = path.join(__dirname, './logPoints.txt')
 
-    fs.writeFile('./milena.txt', coordinatesData, (err) => {
+    fs.writeFile(directory, coordinatesData, (err) => {
         if(err) throw err;
-        console.log('Seu arquivo foi salvo');
-        console.log(`A aproximação do Pi resultou em ${aproximatePi}`)
+        console.log(`Seu arquivo log foi salvo em: ${directory}`);
+        console.log(` 
+    Instruções:
+1 - Vá para https://www.desmos.com/calculator
+2 - Copie a equação 'x^{2}+y^{2}=r^{2}' (sem as aspas) e cole na calculadora desmos, um circulo será gerado
+3 - Defina o Raio correto para o Circulo
+4 - Copie todo o texto gerado no log e cole na calculadora Desmos, todos os pontos serão visualizados
+
+A aproximação do Pi deu ${aproximatePi}
+`);
     })
+
 }
 
-findPi()
+// Defina as proporções abaixo
+const circleRadius = 100
+const amountOfPoints = 678;
+// Defina as proporções acima
+
+
+const range = circleRadius*2;
+const coordinates = getRandomPoints(amountOfPoints,range, circleRadius);
+const aproximatePi = PiAproximation(coordinates.coordArray, circleRadius, amountOfPoints);
+logPoints(coordinates.coordString)
